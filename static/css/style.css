@@ -1,0 +1,208 @@
+:root {
+    --color-bg: #F3E4C9;
+    --color-primary: #A98B76;
+    --color-secondary: #BFA28C;
+    --color-accent: #BABF94;
+    --text-main: #4a3b32;
+    --text-muted: #846d5d;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-main);
+}
+.text-primary, .text-primary i {
+    color: var(--color-primary) !important;
+}
+.text-secondary, .text-secondary i {
+    color: var(--color-secondary) !important;
+}
+
+.bg-primary {
+    background-color: var(--color-primary) !important;
+    color: white !important;
+}
+
+/* Solid Clean Cards */
+.glass-card {
+    background: #ffffff;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(169, 139, 118, 0.15);
+    color: var(--text-main);
+    overflow: visible;
+}
+
+.glass-badge {
+    background: #ffffff;
+    border: none;
+    color: var(--color-primary);
+    box-shadow: 0 2px 10px rgba(169, 139, 118, 0.1);
+}
+
+.btn-primary {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+.btn-primary:hover {
+    background-color: #8c715e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(169, 139, 118, 0.3);
+}
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.btn-outline-primary:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* Layout */
+#wrapper {
+    min-height: 100vh;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    margin: 20px;
+    border-radius: 20px;
+    background: var(--color-secondary);
+    box-shadow: 0 4px 20px rgba(169, 139, 118, 0.15);
+    transition: all 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-heading {
+    color: white !important;
+}
+
+#sidebar-wrapper .list-group-item {
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: none;
+    background: transparent;
+    transition: all 0.2s;
+    border-radius: 12px;
+    margin: 4px 16px;
+}
+
+#sidebar-wrapper .list-group-item:hover, #sidebar-wrapper .list-group-item.active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    transform: translateX(5px);
+}
+
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+    padding: 10px;
+}
+
+.navbar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Modals */
+.modal-content {
+    background: #ffffff;
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(169, 139, 118, 0.2);
+    color: var(--text-main);
+}
+/* Inputs */
+.form-control, .form-select {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    color: var(--text-main) !important;
+    border-radius: 10px;
+}
+.form-control:focus, .form-select:focus {
+    background: #ffffff !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(169, 139, 118, 0.25) !important;
+}
+
+/* Tables in glass cards */
+.table {
+    --bs-table-bg: transparent;
+    color: var(--text-main);
+}
+.table-light {
+    --bs-table-bg: #f8f6f2 !important;
+    color: var(--text-main) !important;
+}
+.table-hover tbody tr:hover {
+    background-color: #f8f6f2 !important;
+}
+
+/* Heatmap Component */
+.heatmap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    overflow: hidden;
+    align-items: stretch;
+}
+.heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr); 
+    gap: 3px;
+    width: 100%; 
+    height: 120px; 
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+.heatmap-cell {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #ebdccc; /* Base empty state, slightly darker than card to show cells */
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: auto;
+}
+.heatmap-cell:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 8px rgba(169, 139, 118, 0.5);
+    z-index: 10;
+}
+
+/* Tracking new palette mapping: Sage green and Taupe logic */
+.heatmap-level-1 { background-color: var(--color-accent); opacity: 0.6; } 
+.heatmap-level-2 { background-color: var(--color-accent); opacity: 0.9; }  
+.heatmap-level-3 { background-color: var(--color-primary); opacity: 0.8; } 
+.heatmap-level-4 { background-color: var(--color-primary); }    
+
+/* Dark Mode stub */
+body.dark-mode {
+    --color-bg: #2d2621;
+    --text-main: #F3E4C9;
+    --color-secondary: #4a3b32;
+    background-color: var(--color-bg);
+}
+body.dark-mode .glass-card {
+    background: #3b312a;
+}
+body.dark-mode .heatmap-cell {
+    background-color: #4a3b32;
+}

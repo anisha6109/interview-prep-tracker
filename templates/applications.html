@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fas fa-file-alt text-primary me-2"></i>Job Applications</h2>
+    <button class="btn btn-primary fw-bold rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#addAppModal">
+        <i class="fas fa-plus me-2"></i>Add Application
+    </button>
+</div>
+
+<div class="glass-card p-4 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3">Company</th>
+                        <th class="py-3">Role</th>
+                        <th class="py-3">Date Applied</th>
+                        <th class="py-3">Status</th>
+                        <th class="text-end pe-4 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr class="align-middle">
+                        <td class="ps-4 fw-bold text-primary">{{ app.company }}</td>
+                        <td class="fw-semibold">{{ app.role }}</td>
+                        <td>{{ app.date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if app.status == 'Offer' %}
+                            <span class="badge bg-success rounded-pill px-3">{{ app.status }}</span>
+                            {% elif app.status == 'Rejected' %}
+                            <span class="badge bg-danger rounded-pill px-3">{{ app.status }}</span>
+                            {% elif app.status == 'Interview' %}
+                            <span class="badge bg-primary rounded-pill px-3">{{ app.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary rounded-pill px-3">{{ app.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="{{ url_for('delete_application', id=app.id) }}" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Delete this application?')"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fas fa-box-open fa-3x mb-3 text-secondary opacity-50"></i>
+                            <p>No applications tracked yet. Start tracking your applications!</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addAppModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <form action="{{ url_for('applications') }}" method="POST">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold">Add Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Company</label>
+                        <input type="text" name="company" class="form-control" required placeholder="Amazon, Meta...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Role</label>
+                        <input type="text" name="role" class="form-control" required placeholder="Software Engineer">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Date Applied</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="Applied">Applied</option>
+                                <option value="Assessment">Assessment</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Offer">Offer</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary fw-bold shadow-sm px-4">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

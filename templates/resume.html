@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold"><i class="fas fa-file-pdf text-danger me-2"></i>Resume Analyzer</h2>
+        <p class="text-muted">Upload your resume to check for missing keywords related to Software Engineering roles.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="glass-card">
+            <div class="card-body p-4 text-center">
+                <i class="fas fa-cloud-upload-alt fa-4x text-primary mb-3"></i>
+                <h5 class="fw-bold mb-3">Upload PDF Resume</h5>
+                <form action="{{ url_for('resume_analyzer') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input class="form-control" type="file" name="resume" accept=".pdf" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary fw-bold w-100 rounded-pill shadow-sm"><i class="fas fa-search me-2"></i>Analyze Resume</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% if result %}
+    <div class="col-md-6 mb-4">
+        <div class="glass-card h-100" style="border-left: 4px solid var(--color-primary)">
+            <div class="card-body p-4">
+                <h5 class="fw-bold text-primary mb-3"><i class="fas fa-poll-h me-2"></i>Analysis Results</h5>
+                
+                <h6 class="fw-semibold">Found Target Keywords:</h6>
+                {% if result.extracted_skills %}
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        {% for skill in result.extracted_skills %}
+                            <span class="badge bg-success text-white rounded-pill px-3 py-2"><i class="fas fa-check me-1"></i> {{ skill | title }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-danger"><i class="fas fa-exclamation-circle me-1"></i> No target keywords matched.</p>
+                {% endif %}
+                
+                <hr class="border-secondary my-4">
+                
+                <h6 class="fw-semibold">Suggestions:</h6>
+                <div class="alert alert-warning border-0 shadow-sm rounded-3 text-dark">
+                    <i class="fas fa-lightbulb me-2"></i> {{ result.suggestion }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
