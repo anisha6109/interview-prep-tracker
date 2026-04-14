@@ -1,125 +1,93 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2 class="mb-4 fw-bold">Welcome, {{ current_user.name }}!</h2>
+<div class="row g-4 animate-fade-in">
+    <!-- Main Left Column -->
+    <div class="col-lg-8">
+        <div class="row g-4">
+            <!-- Heatmap Card -->
+            <div class="col-12">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold m-0">Practice Consistency</h5>
+                        <span class="text-muted small">Last 365 Days</span>
+                    </div>
+                    <div class="heatmap-container">
+                        <div class="heatmap-grid">
+                            {% for day in heatmap_data %}
+                                {% set count = day.count %}
+                                {% set level_class = '' %}
+                                {% if count == 1 %} {% set level_class = 'heatmap-level-1' %}
+                                {% elif count == 2 %} {% set level_class = 'heatmap-level-2' %}
+                                {% elif count == 3 %} {% set level_class = 'heatmap-level-3' %}
+                                {% elif count >= 4 %} {% set level_class = 'heatmap-level-4' %}
+                                {% endif %}
+                                <div class="heatmap-cell {{ level_class }}" title="{{ day.date }}: {{ count }} problems"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-{% if notifications %}
-<div class="row mb-4">
-    <div class="col-12">
-        {% for note in notifications %}
-        <div class="glass-card mb-2 p-3 text-primary d-flex align-items-center">
-            <i class="fas fa-bell me-3"></i> 
-            <span class="flex-grow-1">{{ note }}</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+            <!-- Stats Row -->
+            <div class="col-md-6">
+                <div class="glass-card stat-card-purple">
+                    <h6 class="opacity-75 mb-1">Total Problems</h6>
+                    <h2 class="fw-bold mb-0">{{ solved_problems }}</h2>
+                    <div class="mt-3 small opacity-75">Solved across platforms</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card">
+                    <h6 class="text-muted mb-1">Current Streak</h6>
+                    <h2 class="fw-bold mb-0 text-primary">{{ current_user.streak }} Days</h2>
+                    <div class="mt-3 small text-muted">Keep it up! 🔥</div>
+                </div>
+            </div>
 
-<div class="row mb-4 g-4 animate-fade-in animate-delay-1">
-    <div class="col-md-3">
-        <div class="glass-card p-4 h-100 d-flex align-items-center">
-            <i class="fas fa-code fa-3x me-3 text-primary opacity-75"></i>
-            <div>
-                <h6 class="text-muted mb-0">Problems Solved</h6>
-                <h2 class="fw-bold mb-0 text-primary">{{ solved_problems }} / {{ total_problems }}</h2>
+            <!-- Chart Card -->
+            <div class="col-12">
+                <div class="glass-card">
+                    <h5 class="fw-bold mb-4">Topic Analysis</h5>
+                    <div style="height: 300px;">
+                        <canvas id="topicChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="glass-card p-4 h-100 d-flex align-items-center">
-            <i class="fas fa-paper-plane fa-3x me-3" style="color: #BABF94; opacity: 0.9;"></i>
-            <div>
-                <h6 class="text-muted mb-0">Apps Sent</h6>
-                <h2 class="fw-bold mb-0" style="color: #BABF94;">{{ total_applications }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="glass-card p-4 h-100 d-flex align-items-center">
-            <i class="fas fa-users fa-3x me-3 text-secondary opacity-75"></i>
-            <div>
-                <h6 class="text-muted mb-0">Interviews</h6>
-                <h2 class="fw-bold mb-0 text-secondary">{{ interviews_attended }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="glass-card p-4 h-100 d-flex align-items-center">
-            <i class="fas fa-fire fa-3x me-3 opacity-75" style="color: #ea868f;"></i>
-            <div>
-                <h6 class="text-muted mb-0">Current Streak</h6>
-                <h2 class="fw-bold mb-0" style="color: #ea868f;">{{ current_user.streak }} Days</h2>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row g-4 mb-4 animate-fade-in animate-delay-2">
-    <div class="col-12">
-        <div class="glass-card p-4">
-            <h5 class="fw-bold mb-3"><i class="fas fa-calendar-check text-primary me-2"></i>Consistency Heatmap (Last Year)</h5>
-            <div class="heatmap-container">
-                <div class="heatmap-grid">
-                    {% for day in heatmap_data %}
-                        {% set count = day.count %}
-                        {% set level_class = '' %}
-                        {% if count == 1 %} {% set level_class = 'heatmap-level-1' %}
-                        {% elif count == 2 %} {% set level_class = 'heatmap-level-2' %}
-                        {% elif count == 3 %} {% set level_class = 'heatmap-level-3' %}
-                        {% elif count >= 4 %} {% set level_class = 'heatmap-level-4' %}
-                        {% endif %}
-                        <div class="heatmap-cell {{ level_class }}" title="{{ day.date }}: {{ count }} problems"></div>
+    <!-- Right Side Sidebar Content -->
+    <div class="col-lg-4">
+        <div class="glass-card h-100">
+            <h5 class="fw-bold mb-4">Your Badges</h5>
+            {% if badges %}
+                <div class="d-flex flex-column gap-3">
+                    {% for badge in badges %}
+                        <div class="d-flex align-items-center p-3 rounded-4" style="background: var(--color-main);">
+                            <i class="fas fa-medal fa-2x text-warning me-3"></i>
+                            <div>
+                                <div class="fw-bold">{{ badge }}</div>
+                                <div class="text-muted small">Achievement Unlocked</div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
-                <div class="d-flex justify-content-end w-100 mt-2 text-muted" style="font-size: 0.8rem;">
-                    <span>Less</span>
-                    <div class="heatmap-cell ms-2"></div>
-                    <div class="heatmap-cell heatmap-level-1 ms-1"></div>
-                    <div class="heatmap-cell heatmap-level-2 ms-1"></div>
-                    <div class="heatmap-cell heatmap-level-3 ms-1"></div>
-                    <div class="heatmap-cell heatmap-level-4 ms-1 me-2"></div>
-                    <span>More</span>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-trophy fa-3x mb-3 opacity-25"></i>
+                    <p class="text-muted">Solve more to earn medals!</p>
                 </div>
+            {% endif %}
+
+            <div class="mt-5 pt-4 border-top">
+                <h6 class="fw-bold mb-3">Quick Actions</h6>
+                <a href="{{ url_for('dsa_tracker') }}" class="btn btn-primary w-100 mb-2">New Problem</a>
+                <a href="{{ url_for('export') }}" class="btn btn-outline-secondary w-100">Download Data</a>
             </div>
         </div>
     </div>
 </div>
-
-<div class="row g-4 mb-4 animate-fade-in animate-delay-3">
-    <div class="col-md-8">
-        <div class="glass-card p-4 h-100">
-            <h5 class="fw-bold"><i class="fas fa-chart-pie text-primary me-2"></i>Topic-wise Performance</h5>
-            <div class="d-flex justify-content-center mt-3">
-                <div style="max-height: 250px; width: 100%;">
-                    <canvas id="topicChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="glass-card p-4 h-100 d-flex flex-column">
-            <h5 class="fw-bold"><i class="fas fa-award text-warning me-2"></i>Your Badges</h5>
-            <div class="flex-grow-1 mt-3">
-                {% if badges %}
-                    <div class="d-flex flex-wrap gap-2">
-                        {% for badge in badges %}
-                            <span class="glass-badge p-2 px-3 fw-bold fs-6 rounded-pill shadow-sm"><i class="fas fa-star text-warning me-1"></i> {{ badge }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-muted">Keep practicing to earn badges!</p>
-                {% endif %}
-            </div>
-            <div class="mt-4 pt-3 border-top border-secondary text-center">
-                <a href="{{ url_for('export') }}" class="btn btn-primary fw-bold rounded-pill w-100 py-2"><i class="fas fa-download me-2"></i>Export CSV summary</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -130,27 +98,24 @@
             .then(data => {
                 const ctx = document.getElementById('topicChart').getContext('2d');
                 new Chart(ctx, {
-                    type: 'doughnut',
+                    type: 'bar',
                     data: {
-                        labels: data.topics.labels.length ? data.topics.labels : ['No Data'],
+                        labels: data.topics.labels.length ? data.topics.labels : ['Empty'],
                         datasets: [{
-                            label: 'Problems Solved',
-                            data: data.topics.data.length ? data.topics.data : [1],
-                            backgroundColor: data.topics.data.length ? [
-                                '#A98B76', '#BFA28C', '#BABF94', '#927561', '#E0CAA0', '#d8cba9'
-                            ] : ['rgba(255,255,255,0.5)'],
-                            borderWidth: 0,
-                            borderColor: 'transparent'
+                            label: 'Solved',
+                            data: data.topics.data.length ? data.topics.data : [0],
+                            backgroundColor: '#A18E9B',
+                            borderRadius: 10,
+                            borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right',
-                                labels: { color: '#5c4b40' }
-                            }
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { display: false } },
+                            x: { grid: { display: false } }
                         }
                     }
                 });
