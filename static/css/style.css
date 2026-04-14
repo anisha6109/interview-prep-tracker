@@ -13,6 +13,33 @@ body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
     min-height: 100vh;
+    cursor: none;
+}
+
+/* Custom Cursor */
+.cursor-dot, .cursor-outline {
+    position: fixed;
+    top: 0; left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+}
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-primary);
+}
+.cursor-outline {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-primary);
+    transition: transform 0.2s ease-out, background-color 0.2s, border-color 0.2s;
+}
+
+/* Override default native pointers */
+a, button, .cursor-pointer, input, select, .heatmap-cell, .list-group-item, .btn {
+    cursor: none !important;
 }
 
 /* Typography Overrides */
@@ -35,10 +62,15 @@ h1, h2, h3, h4, h5, h6 {
 .glass-card {
     background: #ffffff;
     border: none;
-    border-radius: 20px;
+    border-radius: 16px;
     box-shadow: 0 4px 20px rgba(169, 139, 118, 0.15);
     color: var(--text-main);
     overflow: visible;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+}
+.glass-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(169, 139, 118, 0.25);
 }
 
 .glass-badge {
@@ -52,14 +84,28 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--color-primary) !important;
     border-color: var(--color-primary) !important;
     color: white !important;
-    font-weight: 600;
-    border-radius: 10px;
-    transition: all 0.2s;
+    font-weight: 500;
+    border-radius: 12px;
+    padding: 10px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+.btn-primary:hover::after {
+    transform: translateY(0);
 }
 .btn-primary:hover {
     background-color: #8c715e !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(169, 139, 118, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(169, 139, 118, 0.35);
 }
 .btn-outline-primary {
     color: var(--color-primary);
@@ -205,4 +251,52 @@ body.dark-mode .glass-card {
 }
 body.dark-mode .heatmap-cell {
     background-color: #4a3b32;
+}
+
+/* Animations & Futuristic Architecture Elements */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-1 { animation-delay: 0.15s; }
+.animate-delay-2 { animation-delay: 0.30s; }
+.animate-delay-3 { animation-delay: 0.45s; }
+
+.geo-shape {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    border: 3px solid var(--color-secondary);
+    opacity: 0.25;
+    animation: simpleFloat 15s ease-in-out infinite alternate;
+}
+
+.geo-circle {
+    border-radius: 50%;
+    width: 350px;
+    height: 350px;
+    top: -80px;
+    right: -80px;
+    border-width: 2px;
+}
+
+.geo-square {
+    width: 250px;
+    height: 250px;
+    bottom: 5%;
+    left: 200px;
+    transform: rotate(45deg);
+    border-color: var(--color-accent);
+    animation-direction: alternate-reverse;
+    animation-duration: 22s;
+}
+
+@keyframes simpleFloat {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-50px) rotate(20deg); }
 }
